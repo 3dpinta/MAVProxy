@@ -15,6 +15,7 @@ class CmdlongModule(mp_module.MPModule):
         self.add_command('velocity', self.cmd_velocity, "velocity")
         self.add_command('cammsg', self.cmd_cammsg, "cammsg")
         self.add_command('camctrlmsg', self.cmd_camctrlmsg, "camctrlmsg")
+        self.add_command('factory_test', self.cmd_factory_test, "factory_test")
 
     def cmd_takeoff(self, args):
         '''take off'''
@@ -139,6 +140,21 @@ class CmdlongModule(mp_module.MPModule):
                                       x_mps, y_mps, z_mps,  # velocity x,y,z
                                       0, 0, 0,  # accel x,y,z
                                       0, 0)     # yaw, yaw rate
+
+    def cmd_factory_test(self, args):
+        '''start/stop factory test'''
+        if (len(args) != 1):
+            print("Usage: factory_test <start/stop>")
+            return
+        mav = self.master
+        if args[0] == "start":
+            mav.mav.command_long_send(mav.target_system, mav.target_component,
+                                      mavutil.mavlink.MAV_CMD_SET_FACTORY_TEST_MODE, 0,
+                                      1, 0, 0, 0, 0, 0, 0)
+        elif args[0] == "stop":
+            mav.mav.command_long_send(mav.target_system, mav.target_component,
+                                      mavutil.mavlink.MAV_CMD_SET_FACTORY_TEST_MODE, 0,
+                                      0, 0, 0, 0, 0, 0, 0)
 
 def init(mpstate):
     '''initialise module'''
